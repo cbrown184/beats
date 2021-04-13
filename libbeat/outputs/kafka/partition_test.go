@@ -22,6 +22,7 @@ package kafka
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"testing"
 	"time"
 
@@ -319,4 +320,10 @@ func partTestHashInvariant(N int) partTestScenario {
 
 		return nil
 	}
+}
+
+func TestHashMaxIntPlusOneDoesNotReturnNegativePartition(t *testing.T) {
+	numPartitions := int32(12)
+	var hash, _ = hash2Partition(uint32(math.MaxInt32+1), numPartitions)
+	assert.True(t, hash <= numPartitions-1 && hash >= 0)
 }
